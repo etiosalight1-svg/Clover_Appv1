@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Clover</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0a0a0a;--bg2:#111;--bg3:#181818;--card:#1c1c1c;
+  --text:#fff;--muted:#666;--border:rgba(255,255,255,.07);
+  --green:#00ffaa;--cyan:#00d4ff;--purple:#cc44ff;--pink:#ff44aa;
+  --gold:#ffaa00;--red:#ff4455;--yellow:#ffee00;
+  --accent:var(--cyan);
+}
+html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;overflow:hidden;}
+
+/* ── SCREENS ── */
+.screen{position:absolute;inset:0;display:none;flex-direction:column;background:var(--bg);overflow:hidden;}
+.screen.active{display:flex;}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0;}to{transform:translateY(0);opacity:1;}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+.anim-slide{animation:slideIn .3s cubic-bezier(.4,0,.2,1) both;}
+.anim-up{animation:slideUp .35s cubic-bezier(.4,0,.2,1) both;}
+.anim-fade{animation:fadeIn .4s ease both;}
+.fu{animation:fadeUp .45s ease both;}
+.d1{animation-delay:.06s;}.d2{animation-delay:.12s;}.d3{animation-delay:.18s;}.d4{animation-delay:.24s;}.d5{animation-delay:.3s;}
+
+/* ════════════ ONBOARDING ════════════ */
+#onboard{background:var(--bg);justify-content:center;align-items:center;padding:40px 28px;}
+.ob-logo{font-family:'Orbitron',sans-serif;font-size:36px;font-weight:900;letter-spacing:.18em;background:linear-gradient(90deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;text-align:center;}
+.ob-tag{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:48px;}
+.ob-svg{width:120px;height:120px;margin-bottom:40px;filter:drop-shadow(0 0 30px var(--green));}
+.ob-title{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:700;text-align:center;margin-bottom:12px;letter-spacing:.04em;}
+.ob-desc{font-size:14px;line-height:1.7;color:var(--muted);text-align:center;max-width:300px;margin-bottom:48px;}
+.ob-pillars{display:flex;flex-direction:column;gap:10px;width:100%;margin-bottom:40px;}
+.ob-pill{padding:14px 20px;background:var(--bg3);border:1px solid var(--border);border-radius:14px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;}
+.ob-pill.sel{border-color:var(--green);background:rgba(0,255,170,.06);}
+.ob-pill-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.ob-pill-name{font-size:14px;font-weight:600;flex:1;}
+.ob-pill-check{font-size:14px;opacity:0;transition:opacity .2s;}
+.ob-pill.sel .ob-pill-check{opacity:1;}
+.ob-btn{width:100%;padding:16px;border-radius:14px;border:none;font-family:'Exo 2',sans-serif;font-size:15px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;background:linear-gradient(90deg,var(--green),var(--cyan));color:#000;transition:opacity .2s;}
+.ob-btn:hover{opacity:.9;}
+.ob-input{width:100%;padding:14px 18px;background:var(--bg3);border:1px solid var(--border);border-radius:14px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:15px;outline:none;margin-bottom:16px;}
+.ob-input:focus{border-color:var(--cyan);}
+.ob-step{font-size:11px;letter-spacing:.16em;color:var(--muted);text-align:center;margin-bottom:28px;}
+
+/* ════════════ HOME ════════════ */
+#home{padding-bottom:72px;}
+.home-hdr{padding:48px 20px 14px;display:flex;align-items:center;justify-content:space-between;}
+.hdr-left{display:flex;flex-direction:column;}
+.hdr-logo{display:flex;align-items:center;gap:10px;}
+.logo-svg{width:34px;height:34px;filter:drop-shadow(0 0 10px var(--green));}
+.logo-txt{font-family:'Orbitron',sans-serif;font-size:21px;font-weight:900;letter-spacing:.16em;background:linear-gradient(90deg,var(--green),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-sub{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:2px;padding-left:44px;}
+.hdr-right{display:flex;align-items:center;gap:10px;}
+.hdr-btn{width:38px;height:38px;border-radius:12px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent;}
+.hdr-pip{position:absolute;top:7px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--red);border:1.5px solid var(--bg);}
+.h-search{margin:0 16px 14px;display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:11px 15px;}
+.h-search input{background:none;border:none;outline:none;color:var(--text);font-family:'Exo 2',sans-serif;font-size:14px;width:100%;}
+.h-search input::placeholder{color:var(--muted);}
+.h-search-ic{font-size:14px;color:var(--muted);}
+.rlabel{padding:0 18px 11px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;}
+.rlabel em{color:var(--green);font-style:normal;}
+.p-scroll{flex:1;overflow-y:auto;padding:0 12px 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.p-scroll::-webkit-scrollbar{display:none;}
+.p-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+
+/* pillar card */
+.pc{position:relative;border-radius:18px;overflow:hidden;cursor:pointer;background:var(--card);-webkit-tap-highlight-color:transparent;transition:transform .18s;}
+.pc:active{transform:scale(.965);}
+.p-grid .pc{aspect-ratio:1/1;}
+.pc-wide{height:155px;margin-bottom:10px;}
+.pc-wide .pc{height:100%;}
+.pc-img{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.5) saturate(.85);transition:transform .45s,filter .3s;}
+.pc:active .pc-img{transform:scale(1.05);filter:brightness(.65) saturate(1);}
+.pc-ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 25%,rgba(0,0,0,.82) 100%);}
+.pc-line{position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 18px 18px;}
+.pc-badge{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:3px 8px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.6);}
+.pc-body{position:absolute;bottom:0;left:0;right:0;padding:12px 13px 14px;}
+.pc-title{font-family:'Orbitron',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fff;margin-bottom:3px;}
+.pc-sub{font-size:9px;letter-spacing:.1em;text-transform:uppercase;}
+.pc-wide .pc-title{font-size:12.5px;}
+
+/* pillar color themes */
+.p-tech .pc-line{background:var(--purple);box-shadow:0 0 10px rgba(204,68,255,.5);}
+.p-tech .pc-sub{color:var(--purple);}
+.p-hlth .pc-line{background:var(--gold);box-shadow:0 0 10px rgba(255,170,0,.5);}
+.p-hlth .pc-sub{color:var(--gold);}
+.p-cre  .pc-line{background:var(--pink);box-shadow:0 0 10px rgba(255,68,170,.5);}
+.p-cre  .pc-sub{color:var(--pink);}
+.p-biz  .pc-line{background:var(--green);box-shadow:0 0 10px rgba(0,255,170,.5);}
+.p-biz  .pc-sub{color:var(--green);}
+.p-soc  .pc-line{background:var(--cyan);box-shadow:0 0 10px rgba(0,212,255,.5);}
+.p-soc  .pc-sub{color:var(--cyan);}
+.p-spt  .pc-line{background:var(--red);box-shadow:0 0 10px rgba(255,68,85,.5);}
+.p-spt  .pc-sub{color:var(--red);}
+.p-sci  .pc-line{background:var(--cyan);box-shadow:0 0 10px rgba(0,212,255,.5);}
+.p-sci  .pc-sub{color:var(--cyan);}
+.p-trv  .pc-line{background:var(--yellow);box-shadow:0 0 10px rgba(255,238,0,.5);}
+.p-trv  .pc-sub{color:var(--yellow);}
+
+/* ════════════ PILLAR DETAIL ════════════ */
+#detail{padding-bottom:72px;}
+.det-hdr{padding:48px 20px 12px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border);}
+.back{width:34px;height:34px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+.det-title{font-family:'Orbitron',sans-serif;font-size:17px;font-weight:700;letter-spacing:.05em;flex:1;text-align:center;}
+.det-scroll{flex:1;overflow-y:auto;padding:14px 12px 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.det-scroll::-webkit-scrollbar{display:none;}
+.sub-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+
+/* sub card */
+.sc{position:relative;border-radius:18px;overflow:hidden;cursor:pointer;background:var(--card);aspect-ratio:3/4;-webkit-tap-highlight-color:transparent;transition:transform .18s;}
+.sc:active{transform:scale(.965);}
+.sc-img{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.48) saturate(.8);transition:transform .4s,filter .3s;}
+.sc:active .sc-img,.sc:hover .sc-img{transform:scale(1.06);filter:brightness(.68) saturate(1);}
+.sc-ov{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.88) 100%);}
+.sc-line{position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 18px 18px;}
+.sc-body{position:absolute;bottom:0;left:0;right:0;padding:11px 13px 13px;}
+.sc-label{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#fff;display:block;margin-bottom:2px;}
+.sc-count{font-size:9px;letter-spacing:.07em;color:rgba(255,255,255,.4);}
+.sc-live{display:inline-block;background:var(--red);color:#fff;font-size:8px;font-weight:700;letter-spacing:.1em;padding:2px 6px;border-radius:4px;margin-bottom:3px;}
+
+/* ════════════ COMMUNITY FEED ════════════ */
+#feed{padding-bottom:72px;}
+.feed-hdr{padding:48px 20px 10px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);}
+.feed-title-wrap{flex:1;text-align:center;}
+.feed-bread{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);}
+.feed-title{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:700;letter-spacing:.05em;}
+.feed-banner{margin:12px 14px 0;border-radius:16px;overflow:hidden;height:110px;position:relative;flex-shrink:0;}
+.feed-banner-bg{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.5);}
+.feed-banner-ov{position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,0,0,.5),rgba(0,0,0,.1));}
+.feed-banner-txt{position:absolute;bottom:12px;left:14px;}
+.feed-banner-txt h3{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;}
+.feed-banner-txt p{font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.06em;}
+.feed-members{position:absolute;bottom:12px;right:14px;font-size:10px;color:rgba(255,255,255,.55);}
+.feed-tabs{display:flex;gap:0;margin:10px 14px 0;background:var(--bg3);border-radius:11px;padding:3px;}
+.ftab{flex:1;padding:7px 0;text-align:center;font-size:11px;letter-spacing:.09em;text-transform:uppercase;border-radius:8px;cursor:pointer;color:var(--muted);transition:all .2s;}
+.ftab.on{background:var(--bg);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.4);}
+.compose-row{margin:10px 14px 0;display:flex;align-items:center;gap:9px;}
+.c-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#0d2e1a,#1a0d2e);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;border:1.5px solid var(--border);}
+.c-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:8px 14px;color:var(--muted);font-family:'Exo 2',sans-serif;font-size:13px;cursor:pointer;}
+.c-post-btn{padding:8px 14px;border-radius:20px;border:none;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.05em;color:#000;}
+.feed-scroll{flex:1;overflow-y:auto;padding:10px 14px 4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.feed-scroll::-webkit-scrollbar{display:none;}
+
+/* post */
+.post{background:var(--bg3);border:1px solid var(--border);border-radius:16px;margin-bottom:10px;}
+.post-top{display:flex;align-items:center;gap:9px;padding:12px 12px 8px;}
+.post-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1a2a1a,#0d1f2e);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;border:1.5px solid var(--border);}
+.post-av.bot{border-color:var(--cyan);}
+.post-name{font-size:13px;font-weight:600;display:flex;align-items:center;gap:5px;}
+.vbadge{width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:7.5px;}
+.post-time{font-size:9.5px;color:var(--muted);margin-top:1px;}
+.post-text{padding:0 12px 10px;font-size:13.5px;line-height:1.65;color:rgba(255,255,255,.85);}
+.post-img-wrap{margin:0 12px 10px;border-radius:10px;overflow:hidden;max-height:180px;}
+.post-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+.post-actions{display:flex;border-top:1px solid var(--border);}
+.pa{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:9px 4px;cursor:pointer;font-size:11.5px;color:var(--muted);transition:all .2s;border-radius:0;-webkit-tap-highlight-color:transparent;}
+.pa:hover{background:rgba(255,255,255,.03);}
+.pa.liked{color:var(--pink);}
+.pa span{font-size:14px;}
+.reply-box{display:none;padding:0 12px 12px;gap:8px;align-items:center;}
+.reply-box.show{display:flex;}
+.r-input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:13px;outline:none;resize:none;}
+.r-send{padding:8px 14px;border-radius:10px;border:none;cursor:pointer;font-family:'Exo 2',sans-serif;font-size:12px;font-weight:700;color:#000;}
+
+/* ════════════ PULSE ════════════ */
+#pulse-screen{padding-bottom:72px;}
+.pulse-hdr{padding:48px 20px 14px;border-bottom:1px solid var(--border);}
+.pulse-hdr h2{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:700;letter-spacing:.06em;color:var(--cyan);margin-bottom:4px;}
+.pulse-hdr p{font-size:11px;color:var(--muted);letter-spacing:.08em;}
+.pulse-filters{display:flex;gap:8px;padding:12px 16px;overflow-x:auto;scrollbar-width:none;}
+.pulse-filters::-webkit-scrollbar{display:none;}
+.pf{padding:6px 14px;border-radius:20px;font-size:11px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);white-space:nowrap;cursor:pointer;transition:all .2s;}
+.pf.on{color:var(--text);border-color:var(--cyan);box-shadow:0 0 8px rgba(0,212,255,.2);}
+.pulse-scroll{flex:1;overflow-y:auto;padding:4px 14px 8px;scrollbar-width:none;}
+.pulse-scroll::-webkit-scrollbar{display:none;}
+.pulse-item{display:flex;gap:12px;padding:13px 14px;background:var(--bg3);border-radius:14px;margin-bottom:8px;border:1px solid var(--border);cursor:pointer;transition:border-color .2s;}
+.pulse-item:hover{border-color:rgba(255,255,255,.12);}
+.pi-av{width:42px;height:42px;border-radius:12px;background-size:cover;background-position:center;flex-shrink:0;filter:brightness(.75);border-radius:12px;}
+.pi-info{flex:1;}
+.pi-meta{font-size:10px;color:var(--muted);margin-bottom:3px;display:flex;align-items:center;gap:6px;}
+.pi-dot{width:6px;height:6px;border-radius:50%;}
+.pi-title{font-size:13.5px;font-weight:600;margin-bottom:3px;line-height:1.35;}
+.pi-time{font-size:10px;color:var(--muted);}
+.pi-actions{display:flex;gap:12px;margin-top:6px;}
+.pi-act{font-size:11px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:4px;}
+
+/* ════════════ NOTIFICATIONS ════════════ */
+#notif-screen{padding-bottom:72px;}
+.notif-hdr{padding:48px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.notif-scroll{flex:1;overflow-y:auto;padding:12px 14px;scrollbar-width:none;}
+.notif-scroll::-webkit-scrollbar{display:none;}
+.notif-item{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;background:var(--bg3);border-radius:14px;margin-bottom:8px;border:1px solid var(--border);position:relative;}
+.notif-item.unread{border-color:rgba(0,212,255,.2);background:rgba(0,212,255,.03);}
+.notif-unread-pip{position:absolute;top:14px;right:14px;width:7px;height:7px;border-radius:50%;background:var(--cyan);}
+.notif-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#0d2e1a,#1a0d2e);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.notif-text{flex:1;font-size:13px;line-height:1.55;color:rgba(255,255,255,.85);}
+.notif-text strong{color:#fff;}
+.notif-time{font-size:10px;color:var(--muted);margin-top:3px;}
+.notif-sec-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding:4px 2px 8px;}
+
+/* ════════════ DM MODAL ════════════ */
+.dm-modal{position:fixed;inset:0;z-index:9999;display:none;flex-direction:column;background:var(--bg);}
+.dm-modal.show{display:flex;}
+.dm-hdr{padding:48px 20px 14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);}
+.dm-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0d2e1a,#1a0d2e);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.dm-user-info{flex:1;}
+.dm-username{font-size:15px;font-weight:600;}
+.dm-status{font-size:10px;color:var(--green);letter-spacing:.1em;}
+.dm-msgs{flex:1;overflow-y:auto;padding:14px 16px 8px;scrollbar-width:none;}
+.dm-msgs::-webkit-scrollbar{display:none;}
+.dm-msg{display:flex;margin-bottom:12px;gap:8px;}
+.dm-msg.mine{flex-direction:row-reverse;}
+.dm-msg-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#1a2a1a,#0d1f2e);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.dm-bubble{max-width:75%;padding:9px 13px;border-radius:16px;font-size:13px;line-height:1.5;}
+.dm-msg:not(.mine) .dm-bubble{background:var(--bg3);border:1px solid var(--border);border-radius:4px 16px 16px 16px;}
+.dm-msg.mine .dm-bubble{border-radius:16px 4px 16px 16px;color:#000;}
+.dm-t{font-size:9px;color:var(--muted);margin-top:3px;text-align:center;}
+.dm-compose{padding:10px 16px 32px;display:flex;gap:10px;border-top:1px solid var(--border);}
+.dm-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:10px 14px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:14px;outline:none;resize:none;}
+.dm-send{width:40px;height:40px;border-radius:12px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;color:#000;flex-shrink:0;}
+
+/* ════════════ ME / PROFILE ════════════ */
+#me-screen{padding-bottom:72px;}
+.me-scroll{flex:1;overflow-y:auto;scrollbar-width:none;}
+.me-scroll::-webkit-scrollbar{display:none;}
+.me-hdr{padding:48px 20px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.me-hdr-title{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;letter-spacing:.1em;color:var(--cyan);}
+.me-hero{padding:28px 20px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+.me-av-wrap{position:relative;margin-bottom:14px;}
+.me-av{width:82px;height:82px;border-radius:50%;border:3px solid var(--cyan);box-shadow:0 0 22px rgba(0,212,255,.3);background:linear-gradient(135deg,#0d2e1a,#1a0d2e);display:flex;align-items:center;justify-content:center;font-size:34px;}
+.me-check{position:absolute;bottom:2px;right:2px;width:20px;height:20px;border-radius:50%;background:var(--green);border:2px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:9px;}
+.me-name{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:700;letter-spacing:.05em;margin-bottom:3px;}
+.me-role{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--green);margin-bottom:16px;}
+.me-stats{display:flex;gap:0;background:var(--bg3);border-radius:14px;border:1px solid var(--border);overflow:hidden;width:100%;}
+.ms{flex:1;padding:13px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;border-right:1px solid var(--border);}
+.ms:last-child{border-right:none;}
+.ms-n{font-family:'Orbitron',sans-serif;font-size:17px;font-weight:700;color:var(--cyan);}
+.ms-l{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.me-sec{padding:6px 16px;}
+.me-sec-t{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:9px;}
+.me-pillars-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.mp{padding:12px 13px;background:var(--bg3);border-radius:12px;border:1px solid var(--border);display:flex;align-items:center;gap:9px;cursor:pointer;}
+.mp-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.mp-n{font-size:12px;font-weight:600;margin-bottom:1px;}
+.mp-p{font-size:9.5px;color:var(--muted);}
+.me-row{display:flex;align-items:center;gap:11px;padding:13px;background:var(--bg3);border-radius:12px;margin-bottom:7px;cursor:pointer;border:1px solid var(--border);-webkit-tap-highlight-color:transparent;}
+.me-row-ic{width:32px;height:32px;border-radius:9px;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;font-size:16px;}
+.me-row-lbl{flex:1;font-size:13.5px;font-weight:500;}
+.me-row-arr{font-size:13px;color:var(--muted);}
+
+/* ════════════ SETTINGS ════════════ */
+#settings-screen{padding-bottom:72px;}
+.settings-scroll{flex:1;overflow-y:auto;scrollbar-width:none;}
+.settings-scroll::-webkit-scrollbar{display:none;}
+.set-hdr{padding:48px 20px 14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);}
+.set-title{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;letter-spacing:.08em;color:var(--cyan);flex:1;text-align:center;}
+.set-sec{padding:16px 16px 0;}
+.set-sec-t{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.set-card{background:var(--bg3);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:14px;}
+.set-row{display:flex;align-items:center;gap:12px;padding:15px 16px;border-bottom:1px solid var(--border);}
+.set-row:last-child{border-bottom:none;}
+.set-row-lbl{flex:1;font-size:14px;font-weight:500;}
+.set-row-val{font-size:12px;color:var(--muted);}
+.set-input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:14px;outline:none;}
+.set-input:focus{border-color:var(--cyan);}
+.toggle{width:44px;height:24px;border-radius:12px;background:var(--bg2);border:1px solid var(--border);position:relative;cursor:pointer;transition:background .25s;flex-shrink:0;}
+.toggle.on{background:var(--green);}
+.toggle-knob{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .25s;}
+.toggle.on .toggle-knob{transform:translateX(20px);}
+.colors-row{display:flex;gap:10px;padding:4px 0;}
+.color-dot{width:30px;height:30px;border-radius:50%;cursor:pointer;transition:transform .2s;border:2px solid transparent;}
+.color-dot.sel{transform:scale(1.2);border-color:#fff;}
+.set-danger{color:var(--red);font-size:14px;font-weight:500;}
+
+/* ════════════ BOTTOM NAV ════════════ */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(10,10,10,.97);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-around;align-items:center;padding:9px 0 24px;z-index:500;}
+.ni{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 14px;opacity:.4;transition:opacity .2s;-webkit-tap-highlight-color:transparent;}
+.ni.on{opacity:1;}
+.ni.on .nic{filter:drop-shadow(0 0 5px var(--cyan));}
+.nic{font-size:20px;}
+.nil{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.ni.on .nil{color:var(--cyan);}
+.nw{position:relative;}
+.npip{position:absolute;top:-2px;right:-3px;width:7px;height:7px;border-radius:50%;background:var(--red);border:1.5px solid var(--bg);}
+
+/* ════════════ SIDE MENU ════════════ */
+.side-menu{position:fixed;inset:0;z-index:800;display:none;}
+.side-menu.show{display:flex;}
+.side-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.6);}
+.side-panel{position:absolute;top:0;left:0;bottom:0;width:72%;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:54px 24px 40px;animation:slideIn .28s ease both;}
+.side-logo{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;color:var(--cyan);margin-bottom:40px;letter-spacing:.14em;}
+.side-item{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.side-item:last-child{border-bottom:none;}
+.side-ic{font-size:20px;width:30px;}
+.side-lbl{font-size:15px;font-weight:500;}
+.side-logout{margin-top:auto;display:flex;align-items:center;gap:12px;cursor:pointer;padding-top:24px;}
+.side-logout span{color:var(--red);font-size:15px;font-weight:500;}
+
+/* utils */
+.divider{height:1px;background:var(--border);margin:4px 0;}
+</style>
+</head>
+<body>
+
+<!-- ════════════ ONBOARDING ════════════ -->
+<div class="screen active" id="onboard">
+  <div id="ob-step1" style="display:flex;flex-direction:column;align-items:center;width:100%;">
+    <svg class="ob-svg" viewBox="0 0 120 134" fill="none">
+      <defs><radialGradient id="lg2"><stop offset="0%" stop-color="#00ffaa"/><stop offset="100%" stop-color="#00aa66"/></radialGradient></defs>
+      <path d="M60 102 Q57 118 52 130" stroke="#00cc77" stroke-width="4" stroke-linecap="round"/>
+      <ellipse cx="60" cy="60" rx="27" ry="40" fill="url(#lg2)" opacity=".9" transform="rotate(-10,60,60)"/>
+      <ellipse cx="60" cy="60" rx="27" ry="40" fill="url(#lg2)" opacity=".9" transform="rotate(80,60,60)"/>
+      <ellipse cx="60" cy="60" rx="27" ry="40" fill="url(#lg2)" opacity=".9" transform="rotate(170,60,60)"/>
+      <ellipse cx="60" cy="60" rx="27" ry="40" fill="url(#lg2)" opacity=".9" transform="rotate(260,60,60)"/>
+      <circle cx="60" cy="60" r="12" fill="#00ffaa"/>
+      <circle cx="60" cy="60" r="7" fill="#fff" opacity=".5"/>
+    </svg>
+    <div class="ob-logo">CLOVER</div>
+    <div class="ob-tag">4 Pillars · 1 Community</div>
+    <div class="ob-title">Welcome to Clover</div>
+    <div class="ob-desc">Your all-in-one community platform. Connect, learn, create and grow with people who share your passions.</div>
+    <button class="ob-btn" onclick="obNext(2)">Get Started →</button>
+  </div>
+
+  <div id="ob-step2" style="display:none;flex-direction:column;align-items:center;width:100%;">
+    <div class="ob-step">STEP 1 OF 2 · YOUR IDENTITY</div>
+    <div class="ob-title" style="margin-bottom:28px;">Create your profile</div>
+    <input class="ob-input" id="ob-name" type="text" placeholder="Your display name…" maxlength="24"/>
+    <input class="ob-input" id="ob-handle" type="text" placeholder="Username e.g. @clover_you…" maxlength="20"/>
+    <button class="ob-btn" onclick="obNext(3)">Continue →</button>
+  </div>
+
+  <div id="ob-step3" style="display:none;flex-direction:column;align-items:center;width:100%;">
+    <div class="ob-step">STEP 2 OF 2 · YOUR INTERESTS</div>
+    <div class="ob-title" style="margin-bottom:8px;">Pick your pillars</div>
+    <div class="ob-desc" style="margin-bottom:24px;">Choose at least 2 communities to join.</div>
+    <div class="ob-pillars" id="ob-pillars-list"></div>
+    <button class="ob-btn" onclick="obFinish()">Enter Clover 🍀</button>
+  </div>
+</div>
+
+<!-- ════════════ HOME ════════════ -->
+<div class="screen" id="home">
+  <div class="home-hdr fu">
+    <div class="hdr-left">
+      <div class="hdr-logo">
+        <svg class="logo-svg" viewBox="0 0 40 44" fill="none">
+          <defs><radialGradient id="lg3"><stop offset="0%" stop-color="#00ffaa"/><stop offset="100%" stop-color="#00cc77"/></radialGradient></defs>
+          <path d="M20 34 Q19 39 17 43" stroke="#00cc77" stroke-width="2.5" stroke-linecap="round"/>
+          <ellipse cx="20" cy="20" rx="9" ry="13" fill="url(#lg3)" opacity=".9" transform="rotate(-10,20,20)"/>
+          <ellipse cx="20" cy="20" rx="9" ry="13" fill="url(#lg3)" opacity=".9" transform="rotate(80,20,20)"/>
+          <ellipse cx="20" cy="20" rx="9" ry="13" fill="url(#lg3)" opacity=".9" transform="rotate(170,20,20)"/>
+          <ellipse cx="20" cy="20" rx="9" ry="13" fill="url(#lg3)" opacity=".9" transform="rotate(260,20,20)"/>
+          <circle cx="20" cy="20" r="4" fill="#00ffaa"/><circle cx="20" cy="20" r="2.5" fill="#fff" opacity=".5"/>
+        </svg>
+        <span class="logo-txt">CLOVER</span>
+      </div>
+      <div style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:2px;padding-left:44px;">Welcome back, <span id="home-username" style="color:var(--cyan);">Explorer</span></div>
+    </div>
+    <div class="hdr-right">
+      <div class="hdr-btn" onclick="showNotifs()"><span>🔔</span><div class="hdr-pip" id="notif-pip"></div></div>
+      <div class="hdr-btn" onclick="showSideMenu()"><span>☰</span></div>
+    </div>
+  </div>
+  <div class="h-search fu d1">
+    <span class="h-search-ic">🔍</span>
+    <input type="text" placeholder="Search pillars, topics, people…" oninput="homeSearch(this.value)" id="home-search-input"/>
+  </div>
+  <div class="rlabel fu d2"><span>PILLARS</span><em id="pillar-count">8 pillars</em></div>
+  <div class="p-scroll" id="home-grid-wrap">
+    <div class="p-grid" id="home-grid"></div>
+  </div>
+</div>
+
+<!-- ════════════ PILLAR DETAIL ════════════ -->
+<div class="screen" id="detail">
+  <div class="det-hdr">
+    <div class="back" onclick="goBack('home')">←</div>
+    <div class="det-title" id="det-title">Tech Hub</div>
+    <div style="width:34px;"></div>
+  </div>
+  <div class="det-scroll"><div class="sub-grid" id="sub-grid"></div></div>
+</div>
+
+<!-- ════════════ COMMUNITY FEED ════════════ -->
+<div class="screen" id="feed">
+  <div class="feed-hdr">
+    <div class="back" onclick="goBack('detail')">←</div>
+    <div class="feed-title-wrap">
+      <div class="feed-bread" id="feed-bread">TECH HUB</div>
+      <div class="feed-title" id="feed-title">AI Drawing</div>
+    </div>
+    <div style="width:34px;"></div>
+  </div>
+  <div class="feed-banner">
+    <div class="feed-banner-bg" id="feed-banner-bg"></div>
+    <div class="feed-banner-ov"></div>
+    <div class="feed-banner-txt"><h3 id="feed-banner-h">AI Drawing</h3><p id="feed-banner-p">Tech Hub · Community</p></div>
+    <div class="feed-members" id="feed-members">👥 243 members</div>
+  </div>
+  <div class="feed-tabs">
+    <div class="ftab on" onclick="switchTab(this,'posts')">Posts</div>
+    <div class="ftab" onclick="switchTab(this,'members')">Members</div>
+    <div class="ftab" onclick="switchTab(this,'media')">Media</div>
+  </div>
+  <div class="compose-row">
+    <div class="c-av">🙂</div>
+    <div class="c-input" onclick="openCompose()">Share something…</div>
+    <button class="c-post-btn" id="c-post-btn" onclick="openCompose()">Post</button>
+  </div>
+  <div class="feed-scroll" id="feed-posts"></div>
+</div>
+
+<!-- ════════════ PULSE ════════════ -->
+<div class="screen" id="pulse-screen">
+  <div class="pulse-hdr fu">
+    <h2>⚡ Pulse</h2>
+    <p>Live activity across all pillars</p>
+  </div>
+  <div class="pulse-filters" id="pulse-filters">
+    <div class="pf on" onclick="filterPulse(this,'all')">All Activity</div>
+    <div class="pf" onclick="filterPulse(this,'tech')">Tech Hub</div>
+    <div class="pf" onclick="filterPulse(this,'sports')">Sports Arena</div>
+    <div class="pf" onclick="filterPulse(this,'creative')">Creative Arts</div>
+    <div class="pf" onclick="filterPulse(this,'social')">Social Sphere</div>
+    <div class="pf" onclick="filterPulse(this,'health')">Vitality Zone</div>
+  </div>
+  <div class="pulse-scroll" id="pulse-list"></div>
+</div>
+
+<!-- ════════════ NOTIFICATIONS ════════════ -->
+<div class="screen" id="notif-screen">
+  <div class="notif-hdr">
+    <div class="back" onclick="goBack('home')">←</div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;letter-spacing:.06em;flex:1;text-align:center;">Notifications</div>
+    <div style="width:34px;font-size:12px;color:var(--cyan);cursor:pointer;" onclick="markAllRead()">Clear</div>
+  </div>
+  <div class="notif-scroll" id="notif-list"></div>
+</div>
+
+<!-- ════════════ ME / PROFILE ════════════ -->
+<div class="screen" id="me-screen">
+  <div class="me-hdr">
+    <div class="me-hdr-title">M E</div>
+    <div style="font-size:13px;color:var(--muted);cursor:pointer;" onclick="showSettings()">⚙️ Settings</div>
+  </div>
+  <div class="me-scroll">
+    <div class="me-hero fu">
+      <div class="me-av-wrap">
+        <div class="me-av" id="me-avatar">🙂</div>
+        <div class="me-check">✓</div>
+      </div>
+      <div class="me-name" id="me-name">Clover_Pilot</div>
+      <div class="me-role">ACTIVE MEMBER</div>
+      <div class="me-stats">
+        <div class="ms"><span class="ms-n" id="me-pillars-count">5</span><span class="ms-l">Pillars</span></div>
+        <div class="ms"><span class="ms-n">18</span><span class="ms-l">Topics</span></div>
+        <div class="ms"><span class="ms-n">64</span><span class="ms-l">Posts</span></div>
+        <div class="ms"><span class="ms-n">211</span><span class="ms-l">Likes</span></div>
+      </div>
+    </div>
+    <div class="me-sec fu d1">
+      <div class="me-sec-t">My Pillars</div>
+      <div class="me-pillars-grid" id="me-pillars-grid"></div>
+    </div>
+    <div class="me-sec fu d2">
+      <div class="me-sec-t">Account</div>
+      <div class="me-row" onclick="showSettings()"><div class="me-row-ic">⚙️</div><div class="me-row-lbl">Settings</div><div class="me-row-arr">›</div></div>
+      <div class="me-row" onclick="showNotifs()"><div class="me-row-ic">🔔</div><div class="me-row-lbl">Notifications</div><div class="me-row-arr">›</div></div>
+      <div class="me-row"><div class="me-row-ic">💬</div><div class="me-row-lbl">My Messages</div><div class="me-row-arr">›</div></div>
+      <div class="me-row"><div class="me-row-ic">🔖</div><div class="me-row-lbl">Bookmarks</div><div class="me-row-arr">›</div></div>
+      <div class="me-row"><div class="me-row-ic">💳</div><div class="me-row-lbl">My Wallet</div><div class="me-row-arr">›</div></div>
+      <div class="me-row" style="color:var(--red);" onclick="logout()"><div class="me-row-ic">🚪</div><div class="me-row-lbl" style="color:var(--red);">Logout</div></div>
+    </div>
+    <div style="height:10px;"></div>
+  </div>
+</div>
+
+<!-- ════════════ SETTINGS ════════════ -->
+<div class="screen" id="settings-screen">
+  <div class="set-hdr">
+    <div class="back" onclick="goBack('me-screen')">←</div>
+    <div class="set-title">SETTINGS</div>
+    <div style="width:34px;"></div>
+  </div>
+  <div class="settings-scroll">
+    <div class="set-sec">
+      <div class="set-sec-t">Profile</div>
+      <div class="set-card">
+        <div class="set-row"><span class="set-row-lbl">Display Name</span><input class="set-input" id="set-name-input" placeholder="Enter name…" style="max-width:160px;" oninput="updateName(this.value)"/></div>
+        <div class="set-row"><span class="set-row-lbl">Username</span><input class="set-input" id="set-handle-input" placeholder="@username" style="max-width:160px;"/></div>
+      </div>
+      <div class="set-sec-t">Wallpaper / Theme Color</div>
+      <div class="set-card">
+        <div class="set-row">
+          <div class="colors-row" id="color-row">
+            <div class="color-dot sel" style="background:#0a0a0a;border-color:#fff;" onclick="setTheme('#0a0a0a',this)"></div>
+            <div class="color-dot" style="background:#0a1520;" onclick="setTheme('#0a1520',this)"></div>
+            <div class="color-dot" style="background:#120a20;" onclick="setTheme('#120a20',this)"></div>
+            <div class="color-dot" style="background:#0a1a0a;" onclick="setTheme('#0a1a0a',this)"></div>
+            <div class="color-dot" style="background:#1a0a0a;" onclick="setTheme('#1a0a0a',this)"></div>
+          </div>
+        </div>
+      </div>
+      <div class="set-sec-t">Privacy & Notifications</div>
+      <div class="set-card">
+        <div class="set-row"><span class="set-row-lbl">Private Account</span><div class="toggle on" id="tog-private" onclick="toggleSetting(this)"><div class="toggle-knob"></div></div></div>
+        <div class="set-row"><span class="set-row-lbl">Push Notifications</span><div class="toggle on" id="tog-notif" onclick="toggleSetting(this)"><div class="toggle-knob"></div></div></div>
+        <div class="set-row"><span class="set-row-lbl">Show Online Status</span><div class="toggle on" id="tog-online" onclick="toggleSetting(this)"><div class="toggle-knob"></div></div></div>
+        <div class="set-row" onclick="clearCache()" style="cursor:pointer;"><span class="set-row-lbl" style="color:var(--cyan);">Clear Cache</span><span>🗑️</span></div>
+      </div>
+      <div class="set-card" style="margin-top:8px;">
+        <div class="set-row" onclick="logout()" style="cursor:pointer;"><span class="set-row-lbl set-danger">Logout</span><span>🚪</span></div>
+      </div>
+    </div>
+    <div style="height:20px;"></div>
+  </div>
+</div>
+
+<!-- ════════════ DM MODAL ════════════ -->
+<div class="dm-modal" id="dm-modal">
+  <div class="dm-hdr">
+    <div class="back" onclick="closeDM()">←</div>
+    <div class="dm-av" id="dm-av">🤖</div>
+    <div class="dm-user-info"><div class="dm-username" id="dm-uname">@CloverBot</div><div class="dm-status">● Online</div></div>
+    <span style="font-size:19px;cursor:pointer;">📞</span>
+  </div>
+  <div class="dm-msgs" id="dm-msgs"></div>
+  <div class="dm-compose">
+    <textarea class="dm-input" id="dm-input" placeholder="Type a message…" rows="1" onkeydown="dmEnter(event)"></textarea>
+    <button class="dm-send" id="dm-send-btn" onclick="sendDM()">➤</button>
+  </div>
+</div>
+
+<!-- ════════════ SIDE MENU ════════════ -->
+<div class="side-menu" id="side-menu">
+  <div class="side-backdrop" onclick="hideSideMenu()"></div>
+  <div class="side-panel">
+    <div class="side-logo">CLOVER</div>
+    <div class="side-item" onclick="hideSideMenu();nav('home');"><div class="side-ic">🏠</div><div class="side-lbl">Dashboard</div></div>
+    <div class="side-item" onclick="hideSideMenu();nav('me-screen');"><div class="side-ic">👤</div><div class="side-lbl">My Profile</div></div>
+    <div class="side-item" onclick="hideSideMenu();showSettings();"><div class="side-ic">⚙️</div><div class="side-lbl">Settings</div></div>
+    <div class="side-item" onclick="hideSideMenu();"><div class="side-ic">💳</div><div class="side-lbl">My Wallet</div></div>
+    <div class="side-item" onclick="hideSideMenu();"><div class="side-ic">🔖</div><div class="side-lbl">Bookmarks</div></div>
+    <div class="side-logout" onclick="logout()"><span style="font-size:20px;">🚪</span><span>Logout</span></div>
+  </div>
+</div>
+
+<!-- ════════════ BOTTOM NAV ════════════ -->
+<nav class="bnav" id="bnav">
+  <div class="ni on" id="ni-home" onclick="nav('home')"><span class="nic">🏠</span><span class="nil">Home</span></div>
+  <div class="ni" id="ni-pulse-screen" onclick="nav('pulse-screen')"><span class="nic">⚡</span><span class="nil">Pulse</span></div>
+  <div class="ni" id="ni-notif-screen" onclick="showNotifs()"><div class="nw"><span class="nic">🔔</span><div class="npip" id="notif-pip2"></div></div><span class="nil">Alerts</span></div>
+  <div class="ni" id="ni-me-screen" onclick="nav('me-screen')"><span class="nic">👤</span><span class="nil">Me</span></div>
+</nav>
+
+<script>
+/* ═══════ PILLAR DATA ═══════ */
+const PILLARS = [
+  { id:'tech', title:'Tech Hub', cls:'p-tech', color:'var(--purple)', sub:'AI · Code · Crypto',
+    img:'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=70',
+    subs:[
+      {id:'ai',    label:'AI Drawing',  count:'312 members', img:'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=300&q=65'},
+      {id:'coding',label:'Coding',      count:'540 members', img:'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=300&q=65'},
+      {id:'crypto',label:'Crypto',      count:'228 members', img:'https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=300&q=65'},
+      {id:'gaming',label:'Gaming',      count:'891 members', img:'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=300&q=65'},
+    ]},
+  { id:'hlth', title:'Vitality Zone', cls:'p-hlth', color:'var(--gold)', sub:'Yoga · Gym · Nutrition',
+    img:'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&q=70',
+    subs:[
+      {id:'yoga',  label:'Yoga',        count:'187 members', img:'https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?w=300&q=65'},
+      {id:'gym',   label:'Gym',         count:'463 members', img:'https://images.unsplash.com/photo-1517963879433-6ad2b056d712?w=300&q=65'},
+      {id:'nutri', label:'Nutrition',   count:'214 members', img:'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=300&q=65'},
+      {id:'zen',   label:'Zen',         count:'99 members',  img:'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=300&q=65'},
+    ]},
+  { id:'cre', title:'Creative Arts', cls:'p-cre', color:'var(--pink)', sub:'Music · Design · Fashion',
+    img:'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&q=70',
+    subs:[
+      {id:'photo', label:'Photography', count:'332 members', img:'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=300&q=65'},
+      {id:'music', label:'Music',       count:'418 members', img:'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=300&q=65'},
+      {id:'design',label:'Design',      count:'267 members', img:'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=300&q=65'},
+      {id:'fashion',label:'Fashion',    count:'195 members', img:'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=300&q=65'},
+    ]},
+  { id:'biz', title:'Business Pro', cls:'p-biz', color:'var(--green)', sub:'Stocks · Startups · Jobs',
+    img:'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&q=70',
+    subs:[
+      {id:'stocks',label:'Stocks',      count:'321 members', img:'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=300&q=65'},
+      {id:'startup',label:'Startups',   count:'284 members', img:'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=300&q=65'},
+      {id:'realty', label:'Real Estate',count:'156 members', img:'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=300&q=65'},
+      {id:'jobs',   label:'Jobs',       count:'512 members', img:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=300&q=65'},
+    ]},
+  { id:'soc', title:'Social Sphere', cls:'p-soc', color:'var(--cyan)', sub:'Dating · News · Politics',
+    img:'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&q=70',
+    subs:[
+      {id:'dating', label:'Dating',     count:'744 members', img:'https://images.unsplash.com/photo-1516589091380-5d8e87df6999?w=300&q=65'},
+      {id:'ztrace', label:'Zero Trace', count:'88 members',  img:'https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=300&q=65'},
+      {id:'politics',label:'Politics',  count:'629 members', img:'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=300&q=65'},
+      {id:'gnews',  label:'Global News',count:'1.2k members',img:'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=300&q=65'},
+    ]},
+  { id:'spt', title:'Sports Arena', cls:'p-spt', color:'var(--red)', sub:'F1 · Basketball · Boxing',
+    img:'https://images.unsplash.com/photo-1540747913346-19212a4b423b?w=400&q=70',
+    subs:[
+      {id:'f1',      label:'Formula 1', count:'567 members', live:true, img:'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=300&q=65'},
+      {id:'basket',  label:'Basketball',count:'832 members', live:true, img:'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=300&q=65'},
+      {id:'boxing',  label:'Boxing',    count:'319 members', img:'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=300&q=65'},
+      {id:'football',label:'Football',  count:'1.4k members',live:true, img:'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=300&q=65'},
+    ]},
+  { id:'sci', title:'Science Lab', cls:'p-sci', color:'var(--cyan)', sub:'Space · Physics · Robotics',
+    img:'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=400&q=70',
+    subs:[
+      {id:'space',  label:'Space',      count:'488 members', img:'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=300&q=65'},
+      {id:'physics',label:'Physics',    count:'213 members', img:'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=300&q=65'},
+      {id:'robotics',label:'Robotics',  count:'176 members', img:'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=300&q=65'},
+      {id:'history',label:'History',    count:'309 members', img:'https://images.unsplash.com/photo-1461360228754-6e81c478b882?w=300&q=65'},
+    ]},
+  { id:'trv', title:'Global Travel', cls:'p-trv', color:'var(--yellow)', sub:'Nature · Hotels · Flights',
+    img:'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&q=70',
+    subs:[
+      {id:'nature', label:'Nature',     count:'621 members', img:'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=300&q=65'},
+      {id:'backpk', label:'Backpacking',count:'284 members', img:'https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=300&q=65'},
+      {id:'flights',label:'Flights',    count:'193 members', img:'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=300&q=65'},
+      {id:'hotels', label:'Hotels',     count:'412 members', img:'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=300&q=65'},
+    ]},
+];
+
+/* ═══════ STATE ═══════ */
+let userName = 'Clover_Pilot';
+let userHandle = '@clover_pilot';
+let currentPillarId = 'tech';
+let currentSubId = 'ai';
+let currentSubLabel = 'AI Drawing';
+let feedPosts = {};
+let postId = 200;
+let dmWith = '';
+let dmConvos = {};
+let notifications = [];
+let hasUnread = true;
+
+/* ═══════ ONBOARDING ═══════ */
+const obPillars = PILLARS.map(p=>({id:p.id,name:p.title,color:p.color}));
+let obSelected = [];
+
+function obNext(step){
+  document.querySelectorAll('#onboard > div').forEach(d=>d.style.display='none');
+  if(step===2){
+    document.getElementById('ob-step2').style.display='flex';
+  } else if(step===3){
+    const n = document.getElementById('ob-name').value.trim();
+    if(n) userName = n;
+    const h = document.getElementById('ob-handle').value.trim();
+    if(h) userHandle = h.startsWith('@')?h:'@'+h;
+    // render pillar picks
+    const list = document.getElementById('ob-pillars-list');
+    list.innerHTML='';
+    obPillars.forEach(p=>{
+      const d=document.createElement('div');
+      d.className='ob-pill';
+      d.dataset.id=p.id;
+      d.innerHTML=`<div class="ob-pill-dot" style="background:${p.color}"></div><div class="ob-pill-name">${p.name}</div><div class="ob-pill-check">✓</div>`;
+      d.onclick=()=>{
+        d.classList.toggle('sel');
+        if(d.classList.contains('sel')) obSelected.push(p.id);
+        else obSelected=obSelected.filter(x=>x!==p.id);
+      };
+      list.appendChild(d);
+    });
+    document.getElementById('ob-step3').style.display='flex';
+  }
+}
+
+function obFinish(){
+  if(obSelected.length<1) obSelected=['tech','spt'];
+  updateProfile();
+  buildHomeGrid();
+  buildPulse();
+  buildNotifications();
+  nav('home');
+}
+
+/* ═══════ NAVIGATION ═══════ */
+function nav(screenId){
+  const screens=['home','detail','feed','pulse-screen','notif-screen','me-screen','settings-screen'];
+  screens.forEach(s=>{ const el=document.getElementById(s); if(el){el.classList.remove('active'); el.style.animation='';} });
+  const target=document.getElementById(screenId);
+  if(!target) return;
+  target.classList.add('active');
+  // bottom nav
+  ['home','pulse-screen','notif-screen','me-screen'].forEach(id=>{
+    const ni=document.getElementById('ni-'+id);
+    if(ni) ni.classList.toggle('on', id===screenId);
+  });
+  // hide bnav on feed/detail
+  const bnav=document.getElementById('bnav');
+  bnav.style.display=['feed','settings-screen','notif-screen'].includes(screenId)?'none':'flex';
+}
+
+function goBack(target){ nav(target); }
+function showNotifs(){
+  markAllRead();
+  nav('notif-screen');
+}
+function showSettings(){
+  document.getElementById('set-name-input').value=userName;
+  document.getElementById('set-handle-input').value=userHandle;
+  nav('settings-screen');
+}
+function showSideMenu(){ document.getElementById('side-menu').classList.add('show'); }
+function hideSideMenu(){ document.getElementById('side-menu').classList.remove('show'); }
+function logout(){ if(confirm('Log out of Clover?')){ nav('onboard'); document.getElementById('onboard').querySelector('#ob-step1').style.display='flex'; } }
+
+/* ═══════ HOME GRID ═══════ */
+function buildHomeGrid(filter=''){
+  const grid=document.getElementById('home-grid');
+  grid.innerHTML='';
+  const filtered=PILLARS.filter(p=>!filter||p.title.toLowerCase().includes(filter.toLowerCase())||p.sub.toLowerCase().includes(filter.toLowerCase()));
+  document.getElementById('pillar-count').textContent=filtered.length+' pillars';
+  filtered.forEach(p=>{
+    const d=document.createElement('div');
+    d.className=`pc ${p.cls}`;
+    d.innerHTML=`
+      <div class="pc-img" style="background-image:url('${p.img}')"></div>
+      <div class="pc-ov"></div><div class="pc-line"></div>
+      <div class="pc-badge">${p.subs.length} topics</div>
+      <div class="pc-body">
+        <div class="pc-title">${p.title}</div>
+        <div class="pc-sub">${p.sub}</div>
+      </div>`;
+    d.onclick=()=>openPillar(p.id);
+    grid.appendChild(d);
+  });
+}
+
+function homeSearch(val){ buildHomeGrid(val); }
+
+/* ═══════ PILLAR DETAIL ═══════ */
+function openPillar(pid){
+  currentPillarId=pid;
+  const p=PILLARS.find(x=>x.id===pid);
+  const title=document.getElementById('det-title');
+  title.textContent=p.title.toUpperCase();
+  title.style.color=p.color;
+  const grid=document.getElementById('sub-grid');
+  grid.innerHTML='';
+  p.subs.forEach(s=>{
+    const d=document.createElement('div');
+    d.className='sc';
+    d.innerHTML=`
+      <div class="sc-img" style="background-image:url('${s.img}')"></div>
+      <div class="sc-ov"></div>
+      <div class="sc-line" style="background:${p.color};box-shadow:0 0 10px ${p.color}55;"></div>
+      <div class="sc-body">
+        ${s.live?'<span class="sc-live">● LIVE</span>':''}
+        <span class="sc-label">${s.label}</span>
+        <span class="sc-count">${s.count}</span>
+      </div>`;
+    d.onclick=()=>openFeed(pid,s);
+    grid.appendChild(d);
+  });
+  nav('detail');
+}
+
+/* ═══════ FEED ═══════ */
+function openFeed(pid,sub){
+  currentSubId=sub.id;
+  currentSubLabel=sub.label;
+  const p=PILLARS.find(x=>x.id===pid);
+  document.getElementById('feed-bread').textContent=p.title.toUpperCase();
+  document.getElementById('feed-title').textContent=sub.label;
+  document.getElementById('feed-title').style.color=p.color;
+  document.getElementById('feed-banner-bg').style.backgroundImage=`url('${sub.img}')`;
+  document.getElementById('feed-banner-h').textContent=sub.label;
+  document.getElementById('feed-banner-p').textContent=p.title+' · Community';
+  document.getElementById('feed-members').textContent='👥 '+sub.count;
+  document.getElementById('c-post-btn').style.background=p.color;
+  document.getElementById('dm-send-btn').style.background=p.color;
+  if(!feedPosts[sub.id]) feedPosts[sub.id]=genSeedPosts(sub.label,p.color);
+  renderFeed();
+  // reset tabs
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('on'));
+  document.querySelector('.ftab').classList.add('on');
+  nav('feed');
+}
+
+function genSeedPosts(label,color){
+  return [
+    {id:postId++,user:'@CloverBot',av:'🤖',bot:true,verified:true,time:'Just now',color:'var(--cyan)',
+     text:`Welcome to ${label}! This is your community space — share ideas, ask questions, connect with members and grow together. 🍀`,likes:18,liked:false},
+    {id:postId++,user:'@Alex_K',av:'😊',bot:false,verified:false,time:'2m ago',color,
+     text:`Just joined this community! Really excited to be here. Anyone want to connect and exchange ideas? 👋`,likes:7,liked:false},
+    {id:postId++,user:'@Sam_J',av:'🎯',bot:false,verified:false,time:'5m ago',color:'var(--gold)',
+     text:`This space is going to be 🔥. Already learned so much from other members. Keep the conversations coming!`,likes:4,liked:false},
+    {id:postId++,user:'@Maria_V',av:'🌟',bot:false,verified:true,time:'12m ago',color:'var(--pink)',
+     text:`Quick tip for everyone new here: use the reply button to respond directly to posts and the ✉️ button to message someone privately!`,likes:22,liked:false},
+  ];
+}
+
+function renderFeed(){
+  const p=PILLARS.find(x=>x.id===currentPillarId);
+  const posts=feedPosts[currentSubId]||[];
+  const container=document.getElementById('feed-posts');
+  container.innerHTML='';
+  posts.forEach(post=>{
+    const el=document.createElement('div');
+    el.className='post';
+    el.id='post-'+post.id;
+    el.innerHTML=`
+      <div class="post-top">
+        <div class="post-av${post.bot?' bot':''}">${post.av}</div>
+        <div style="flex:1;">
+          <div class="post-name">${post.user}${post.verified?`<span class="vbadge" style="background:${post.bot?'var(--cyan)':p.color}">✓</span>`:''}</div>
+          <div class="post-time">${post.time}</div>
+        </div>
+        <div style="font-size:18px;color:var(--muted);cursor:pointer;padding:4px;">···</div>
+      </div>
+      <div class="post-text">${post.text}</div>
+      <div class="post-actions">
+        <div class="pa${post.liked?' liked':''}" onclick="toggleLike(${post.id})">
+          <span>${post.liked?'❤️':'🤍'}</span><span id="lc-${post.id}">${post.likes}</span>
+        </div>
+        <div class="pa" onclick="toggleReply(${post.id})"><span>💬</span>Reply</div>
+        ${!post.bot?`<div class="pa" onclick="openDM('${post.user}','${post.av}','${p.color}')"><span>✉️</span>Message</div>`:''}
+      </div>
+      <div class="reply-box" id="rb-${post.id}">
+        <textarea class="r-input" placeholder="Write a reply…" rows="1" id="ri-${post.id}"></textarea>
+        <button class="r-send" style="background:${p.color};" onclick="submitReply(${post.id})">Send</button>
+      </div>`;
+    container.appendChild(el);
+  });
+}
+
+function toggleLike(pid){
+  const posts=feedPosts[currentSubId];
+  const post=posts.find(p=>p.id===pid);
+  if(!post) return;
+  post.liked=!post.liked;
+  post.likes+=post.liked?1:-1;
+  const el=document.querySelector(`#post-${pid} .pa`);
+  const lc=document.getElementById('lc-'+pid);
+  if(el){el.classList.toggle('liked',post.liked);el.querySelector('span').textContent=post.liked?'❤️':'🤍';}
+  if(lc) lc.textContent=post.likes;
+}
+
+function toggleReply(pid){
+  const rb=document.getElementById('rb-'+pid);
+  if(!rb) return;
+  const showing=rb.classList.contains('show');
+  document.querySelectorAll('.reply-box').forEach(b=>b.classList.remove('show'));
+  if(!showing){rb.classList.add('show');rb.querySelector('textarea').focus();}
+}
+
+function submitReply(pid){
+  const inp=document.getElementById('ri-'+pid);
+  const txt=inp.value.trim();
+  if(!txt) return;
+  feedPosts[currentSubId].push({id:postId++,user:'@'+userName.replace(/\s/g,'_'),av:'🙂',bot:false,verified:false,time:'Just now',color:'var(--green)',text:'↩ '+txt,likes:0,liked:false});
+  inp.value='';
+  document.getElementById('rb-'+pid).classList.remove('show');
+  renderFeed();
+  setTimeout(()=>{const c=document.getElementById('feed-posts');c.scrollTop=c.scrollHeight;},100);
+}
+
+function switchTab(el,tab){
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  const fp=document.getElementById('feed-posts');
+  if(tab==='posts') renderFeed();
+  else if(tab==='members') fp.innerHTML=`<div style="text-align:center;padding:44px 20px;color:var(--muted);font-size:13px;line-height:2;">👥<br><br>Members directory<br>coming soon!</div>`;
+  else fp.innerHTML=`<div style="text-align:center;padding:44px 20px;color:var(--muted);font-size:13px;line-height:2;">🖼️<br><br>No media yet.<br>Post images to see them here.</div>`;
+}
+
+function openCompose(){
+  const p=PILLARS.find(x=>x.id===currentPillarId);
+  const txt=prompt(`Post to ${currentSubLabel}:`);
+  if(!txt||!txt.trim()) return;
+  feedPosts[currentSubId].push({id:postId++,user:'@'+userName.replace(/\s/g,'_'),av:'🙂',bot:false,verified:false,time:'Just now',color:p.color,text:txt.trim(),likes:0,liked:false});
+  renderFeed();
+  setTimeout(()=>{const c=document.getElementById('feed-posts');c.scrollTop=c.scrollHeight;},100);
+}
+
+/* ═══════ DM ═══════ */
+function openDM(username,avatar,color){
+  dmWith=username;
+  document.getElementById('dm-uname').textContent=username;
+  document.getElementById('dm-av').textContent=avatar;
+  document.getElementById('dm-send-btn').style.background=color;
+  if(!dmConvos[username]) dmConvos[username]=[{mine:false,av:avatar,text:`Hey! Thanks for reaching out 👋 Happy to connect in ${currentSubLabel}!`,time:'Just now'}];
+  renderDM(avatar);
+  document.getElementById('dm-modal').classList.add('show');
+}
+
+function closeDM(){ document.getElementById('dm-modal').classList.remove('show'); }
+
+function renderDM(fallbackAv){
+  const convos=dmConvos[dmWith]||[];
+  const container=document.getElementById('dm-msgs');
+  container.innerHTML='';
+  convos.forEach(msg=>{
+    const d=document.createElement('div');
+    d.className='dm-msg'+(msg.mine?' mine':'');
+    const bubble_style=msg.mine?`style="background:${document.getElementById('dm-send-btn').style.background};"`:''
+    d.innerHTML=`${!msg.mine?`<div class="dm-msg-av">${msg.av||fallbackAv}</div>`:''}<div><div class="dm-bubble" ${bubble_style}>${msg.text}</div><div class="dm-t">${msg.time}</div></div>${msg.mine?`<div class="dm-msg-av">🙂</div>`:''}`;
+    container.appendChild(d);
+  });
+  container.scrollTop=container.scrollHeight;
+}
+
+function sendDM(){
+  const inp=document.getElementById('dm-input');
+  const txt=inp.value.trim();
+  if(!txt) return;
+  const av=dmConvos[dmWith][0]?.av||'🤖';
+  dmConvos[dmWith].push({mine:true,text:txt,time:'Just now'});
+  inp.value='';
+  renderDM(av);
+  setTimeout(()=>{
+    const replies=['Got it! 🙌','Interesting point! Tell me more 👀','Love that energy! 🔥','Thanks for sharing! Happy to connect 🍀','Let\'s collab! What did you have in mind?'];
+    dmConvos[dmWith].push({mine:false,av,text:replies[Math.floor(Math.random()*replies.length)],time:'Just now'});
+    renderDM(av);
+  },900);
+}
+
+function dmEnter(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendDM();}}
+
+/* ═══════ PULSE ═══════ */
+const PULSE_DATA=[
+  {cat:'tech',   av:'🤖', img:'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=80&q=60',  color:'var(--purple)', user:'@Alex_K',    title:'Just shared a new AI art piece in Tech Hub · AI Drawing',   time:'1m ago',  likes:14},
+  {cat:'sports', av:'⚽', img:'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=80&q=60', color:'var(--red)',    user:'@GoalKing',  title:'GOAL! Last-minute winner posted in Sports Arena · Football',   time:'2m ago',  likes:31},
+  {cat:'health', av:'🧘', img:'https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?w=80&q=60', color:'var(--gold)',   user:'@ZenMaster', title:'New morning routine shared in Vitality Zone · Yoga',          time:'4m ago',  likes:9},
+  {cat:'creative',av:'🎨',img:'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=80&q=60', color:'var(--pink)',   user:'@Mia_Arts',  title:'New music composition posted in Creative Arts · Music',        time:'6m ago',  likes:22},
+  {cat:'social', av:'🌍', img:'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=80&q=60', color:'var(--cyan)',   user:'@NickNews',  title:'Breaking story in Social Sphere · Global News',               time:'8m ago',  likes:55},
+  {cat:'tech',   av:'💻', img:'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=80&q=60', color:'var(--purple)', user:'@DevDave',   title:'Solved a tricky bug — shared solution in Tech Hub · Coding',  time:'11m ago', likes:18},
+  {cat:'sports', av:'🥊', img:'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=80&q=60',   color:'var(--red)',    user:'@BoxFan99',  title:'Fight breakdown posted in Sports Arena · Boxing',             time:'14m ago', likes:12},
+  {cat:'social', av:'❤️', img:'https://images.unsplash.com/photo-1516589091380-5d8e87df6999?w=80&q=60',color:'var(--cyan)',   user:'@LoveLife',  title:'New connection made in Social Sphere · Dating',               time:'18m ago', likes:8},
+  {cat:'health', av:'🍊', img:'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=80&q=60', color:'var(--gold)',   user:'@FitFiona',  title:'Weekly meal plan shared in Vitality Zone · Nutrition',        time:'22m ago', likes:17},
+  {cat:'creative',av:'📸',img:'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=80&q=60', color:'var(--pink)',   user:'@LensLara',  title:'Golden hour shots in Creative Arts · Photography',            time:'28m ago', likes:41},
+];
+
+let pulseFilter='all';
+
+function buildPulse(){renderPulse();}
+
+function renderPulse(){
+  const list=document.getElementById('pulse-list');
+  const items=pulseFilter==='all'?PULSE_DATA:PULSE_DATA.filter(p=>p.cat===pulseFilter);
+  list.innerHTML='';
+  items.forEach(item=>{
+    const d=document.createElement('div');
+    d.className='pulse-item fu';
+    d.innerHTML=`
+      <div class="pi-av" style="background-image:url('${item.img}');border-radius:12px;"></div>
+      <div class="pi-info">
+        <div class="pi-meta"><div class="pi-dot" style="background:${item.color}"></div>${item.user}</div>
+        <div class="pi-title">${item.title}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div class="pi-time">${item.time}</div>
+          <div class="pi-actions">
+            <div class="pi-act">🤍 ${item.likes}</div>
+            <div class="pi-act">💬 Reply</div>
+          </div>
+        </div>
+      </div>`;
+    list.appendChild(d);
+  });
+}
+
+function filterPulse(el,cat){
+  document.querySelectorAll('.pf').forEach(f=>f.classList.remove('on'));
+  el.classList.add('on');
+  pulseFilter=cat;
+  renderPulse();
+}
+
+/* ═══════ NOTIFICATIONS ═══════ */
+function buildNotifications(){
+  notifications=[
+    {unread:true,  av:'🤖',text:'<strong>@CloverBot</strong> welcomed you to <strong>Tech Hub</strong>!',time:'Just now'},
+    {unread:true,  av:'❤️',text:'<strong>@Maria_V</strong> liked your post in <strong>Creative Arts</strong>.',time:'3m ago'},
+    {unread:true,  av:'💬',text:'<strong>@Alex_K</strong> replied to your comment in <strong>AI Drawing</strong>.',time:'7m ago'},
+    {unread:false, av:'🔥',text:'<strong>Sports Arena</strong> is trending right now — 1.4k members active!',time:'12m ago'},
+    {unread:false, av:'👥',text:'<strong>@GoalKing</strong> sent you a private message.',time:'18m ago'},
+    {unread:false, av:'🌟',text:'You have a new follower: <strong>@DevDave</strong>',time:'25m ago'},
+    {unread:false, av:'📢',text:'New post in <strong>Vitality Zone · Yoga</strong> you might like.',time:'1h ago'},
+  ];
+  renderNotifs();
+}
+
+function renderNotifs(){
+  const list=document.getElementById('notif-list');
+  list.innerHTML='';
+  let todayAdded=false,earlierAdded=false;
+  notifications.forEach((n,i)=>{
+    if(i===0&&!todayAdded){
+      const lbl=document.createElement('div');
+      lbl.className='notif-sec-label';lbl.textContent='TODAY';
+      list.appendChild(lbl);todayAdded=true;
+    }
+    if(i===4&&!earlierAdded){
+      const lbl=document.createElement('div');
+      lbl.className='notif-sec-label';lbl.textContent='EARLIER';
+      list.appendChild(lbl);earlierAdded=true;
+    }
+    const d=document.createElement('div');
+    d.className='notif-item'+(n.unread?' unread':'');
+    d.innerHTML=`
+      <div class="notif-av">${n.av}</div>
+      <div style="flex:1;">
+        <div class="notif-text">${n.text}</div>
+        <div class="notif-time">${n.time}</div>
+      </div>
+      ${n.unread?'<div class="notif-unread-pip"></div>':''}`;
+    list.appendChild(d);
+  });
+  // update pip
+  const hasU=notifications.some(n=>n.unread);
+  ['notif-pip','notif-pip2'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=hasU?'block':'none';});
+}
+
+function markAllRead(){
+  notifications.forEach(n=>n.unread=false);
+  renderNotifs();
+}
+
+/* ═══════ SETTINGS ═══════ */
+function updateName(val){
+  if(val.trim()){
+    userName=val.trim();
+    document.getElementById('me-name').textContent=userName;
+    document.getElementById('home-username').textContent=userName;
+  }
+}
+
+function setTheme(color,el){
+  document.documentElement.style.setProperty('--bg',color);
+  document.getElementById('onboard').style.background=color;
+  document.querySelectorAll('.color-dot').forEach(d=>d.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function toggleSetting(el){ el.classList.toggle('on'); }
+
+function clearCache(){ alert('Cache cleared! ✓'); }
+
+/* ═══════ PROFILE ═══════ */
+function updateProfile(){
+  document.getElementById('me-name').textContent=userName;
+  document.getElementById('home-username').textContent=userName;
+  const grid=document.getElementById('me-pillars-grid');
+  grid.innerHTML='';
+  const selected=obSelected.length?PILLARS.filter(p=>obSelected.includes(p.id)):PILLARS.slice(0,4);
+  document.getElementById('me-pillars-count').textContent=selected.length;
+  selected.forEach(p=>{
+    const d=document.createElement('div');
+    d.className='mp';
+    d.innerHTML=`<div class="mp-dot" style="background:${p.color}"></div><div><div class="mp-n">${p.title}</div><div class="mp-p">${p.subs.length} topics</div></div>`;
+    grid.appendChild(d);
+  });
+}
+
+/* ═══════ INIT ═══════ */
+buildHomeGrid();
+buildPulse();
+buildNotifications();
+// show notif pip on load
+document.getElementById('notif-pip').style.display='block';
+document.getElementById('notif-pip2').style.display='block';
+</script>
+</body>
+</html>
